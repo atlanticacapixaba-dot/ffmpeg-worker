@@ -1,25 +1,28 @@
 const express = require("express");
 const { exec } = require("child_process");
+
 const app = express();
 
+// Rota principal - só para testar se está no ar
 app.get("/", (req, res) => {
   res.send("FFmpeg Worker está rodando 🚀");
 });
 
-// Exemplo de endpoint para rodar um comando FFmpeg
+// Rota para rodar um comando de teste (versão do FFmpeg)
 app.get("/run", (req, res) => {
-  const cmd = 'ffmpeg -version'; // aqui você pode depois trocar pelo comando que gerar seus vídeos
-  exec(cmd, (error, stdout, stderr) => {
+  exec("ffmpeg -version", (error, stdout, stderr) => {
     if (error) {
       return res.status(500).send(`Erro: ${error.message}`);
     }
     if (stderr) {
       return res.send(`Stderr: ${stderr}`);
     }
-    res.send(`Resultado: ${stdout}`);
+    res.send(`Resultado:\n${stdout}`);
   });
 });
 
-app.listen(3000, () => {
-  console.log("Servidor rodando na porta 3000 🎧");
+// Porta dinâmica do Railway (ou 3000 como fallback)
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT} 🎧`);
 });
